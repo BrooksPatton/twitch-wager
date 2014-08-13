@@ -1,0 +1,58 @@
+//- We are using html5
+doctype html
+//- Begin our html tag, set to the english language
+html(lang='en')
+	//- Head section
+	head
+		//- Tell the browser that we are using utf-8 character set
+		meta(charset="utf-8")
+		//- Set the application name for google
+		meta(name='application-name', content='Twitch Wager')
+		//- Set the author for google
+		meta(name='author', content='Brooks Patton')
+		//- Set the description which is used when the viewer shares the page
+		meta(name='description', content='Place wagers on your favorite Twitch.tv streamers')
+		//- Useful for google and other spiders
+		meta(name='keywords', content='twitch.tv, gaming, bet, betting, stream, streaming, game, live')
+		//- Setting the title here, but other jade files that are extending the layout can customize the title as well
+		block title
+			title Twitch Wager
+		//- We are using twitter bootstrap
+		link(rel='stylesheet', type='text/css', href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css')
+		//- Our main css stylesheet that will be included in all pages
+		link(rel='stylesheet', type='text/css', href='/styles/main.css')
+		//- any stylesheets that other jade files will extend
+		block css
+
+	//- Body section
+	body
+		//- Begin top navbar
+		.navbar.navbar-inverse.navbar-fixed-top
+			.container
+				a.navbar-brand(href='/') Twitch Wagers
+		//- the other jade templates will extend their content here
+		block content
+		
+		//- script section
+		//- We are using jQuery for dom manipulation
+		script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+		//- We are using underscore as it is required for backbone
+		script(src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js')
+		//- We are using handlebars for client side html templating
+		script(src='//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js')
+		//- We are using backbone for MV* javascript
+		script(src='//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js')
+		//- Our main.js file that will be used on all pages in the site
+		script(src='/scripts/main.js')
+		//- Script tags localised to other pages will be extended here from other jade templates
+		block scripts
+
+		//- Handlebar template for the top navbar user login and logout section
+		script(type='text/x-handlebars-template')#navbar-user.
+			<div class='navbar-right'>
+				{{#if user}}
+					User is logged in
+				{{else}}
+					Log in with Twitch.tv
+				{{/if}}
+			</div>
