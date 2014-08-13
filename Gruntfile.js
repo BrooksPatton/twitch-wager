@@ -8,15 +8,24 @@ module.exports = function(grunt) {
 		jshint: {
 			// Run jslint on all javascript files.
 			all: [
-				'Gruntfile.js',
-				'controllers/*.js'
+				'config/**/*.js',
+				'controllers/**/*.js',
+				'models/**/*.js',
+				'public/**/*.js',
+				'*.js'
 			],
 		},
 
 		// Configuring watch
 		watch: {
 			scripts: {
-				files: ['Gruntfile.js', 'controllers/**/*.js', 'models/**/*.js', 'public/**/*.js', '*.js'],
+				files: [
+					'config/**/*.js',
+					'controllers/**/*.js',
+					'models/**/*.js',
+					'public/**/*.js',
+					'*.js'
+				],
 				tasks: ['jshint']
 			}
 		}
