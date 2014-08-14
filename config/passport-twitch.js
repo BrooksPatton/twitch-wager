@@ -8,8 +8,6 @@ var TwitchtvStrategy = require('passport-twitchtv').Strategy;
 /**
 * Local requires
 */
-// Since we are storing some of the user data in our local database we will need our User model
-var User = require('../models/user');
 // We need to require our keys so that we can authenticate with Twitch's OAUTH server
 var twitchKeys = require('./twitch-keys');
 
@@ -20,9 +18,7 @@ passport.serializeUser(function(user, done) {
 
 // Passport deserialization. Essentially the inverse of above. This takes a user out of the session and converts it into an actual user object
 passport.deserializeUser(function(id, done) {
-	User.findById(id, function(err, user) {
-		done(err, user);
-	});
+	done(null, id);
 });
 
 // Define the Twitch.tv passport strategy. This will be used by passport whenever we reference it.
@@ -55,7 +51,6 @@ var twitchtvStrategy = new TwitchtvStrategy(
 	function(accessToken, refreshToken, profile, done) {
 		// Called whenever authentication succeeds
 		process.nextTick(function() {
-			console.log(profile);
 			return done(null, profile);
 		});
 	}

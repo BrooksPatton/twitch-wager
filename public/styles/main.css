@@ -1,3 +1,36 @@
+/* Base */
 body {
 	margin-top: 70px;
+	background-color: #000;
+	background-image: url('/images/congruent_outline.png');
 }
+
+/* Layout */
+.screen-height {
+	height: 500px
+}
+
+.display-table {
+	display: table;
+}
+
+.display-table-cell {
+	display: table-cell;
+}
+
+.center-vertical-block {
+	vertical-align: middle;
+}
+
+/* Modules */
+.twitch-purple {
+	color: #6441a5;
+}
+
+.orange-text {
+	color: #ffbb33;
+}
+
+/* State */
+
+/* Theme */
