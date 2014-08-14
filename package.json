@@ -6,6 +6,8 @@
     "express-session": "^1.7.5",
     "jade": "^1",
     "method-override": "^2.1.3",
+    "mongoose": "^3.8.14",
+    "node-restful": "^0.1.17",
     "passport": "^0.2.0",
     "passport-twitchtv": "^0.1.4"
   },

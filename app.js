@@ -13,6 +13,10 @@ var methodOverride = require('method-override');
 var session = require('express-session');
 // We are using passport to authenticate users
 var passport = require('passport');
+// We are creating a restful api using node-restful.
+var restful = require('node-restful');
+// We require mongoose for the database transactions, but we are using the node-restful as middleware between us and the require
+var mongoose = restful.mongoose;
 
 /**
  * Local file requires
@@ -22,6 +26,7 @@ var passportConfig = require('./config/passport.js');
 var authenticationController = require('./controllers/authentication');
 var passportTwitch = require('./config/passport-twitch.js');
 var twitchWagerController = require('./controllers/twitch-wager.js');
+var User = require('./models/user'); // The .js is optional, require will get it regardless
 
 /**
  * Configure the express server
@@ -50,6 +55,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 /**
+* Connect to the database with mongoose
+*/
+mongoose.connect('mongodb://localhost/twitchWager');
+
+/**
  * Route handlers
  */
  // When the browser navigates to /
@@ -75,6 +85,10 @@ app.get('/auth/logout', authenticationController.logout);
 // We can prevent unauthorized access to any route handler defined after this call
 // to .use()
 app.use(passportConfig.ensureAuthenticated);
+
+// Register all of the restful routes after the included string
+// This means that the user is accessible through /user/put and so on
+User.register(app, '/user');
 
 // The root of the twitch wager app
 app.get('/twitch-wager', twitchWagerController.index);
