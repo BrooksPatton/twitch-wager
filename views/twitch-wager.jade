@@ -3,3 +3,14 @@ extends layout
 block title
 	title Twitch Wagers - Bet fake internet money on the outcome of your favorite Twitch.tv streamers
 
+block navbar
+	#user-fim-count
+
+block scripts
+	script.
+		//- This is a fun one. We are embedding the mongodb _id for the user object into the javascript namespace so that it can be referenced by the variable userId. We are doing this by using the JSON.stringify command which flattens the data. When it gets to the client, it is in a script tag, so the JSON.parse command runs immediately which returns the string to normal and saves it in userId. 
+		var userId = JSON.parse('!{JSON.stringify(userId)}');
+	script(src='/scripts/models/user-model.js')
+	script(src='/scripts/views/fim-view.js')
+	script(src='/scripts/router/router.js')
+	script(src='/scripts/main.js')

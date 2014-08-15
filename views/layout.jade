@@ -29,8 +29,8 @@ html(lang='en')
 		//- Begin top navbar
 		.navbar.navbar-default.navbar-fixed-top
 			.container
-				block navbarBrand
-					a.navbar-brand(href='/') Twitch Wagers
+				a.navbar-brand(href='/') Twitch Wagers
+				block navbar
 				.navbar-right
 					if user
 						p.navbar-text #{user.displayName}
@@ -49,10 +49,6 @@ html(lang='en')
 		script(src='//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0-alpha.4/handlebars.min.js')
 		//- We are using backbone for MV* javascript
 		script(src='//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js')
-		//- Our main.js file that will be used on all pages in the site
-		script(src='/scripts/main.js')
 		//- Script tags localised to other pages will be extended here from other jade templates
 
-		script.
-			var userId = JSON.parse('!{JSON.stringify(user.id)}');
 		block scripts

@@ -6,7 +6,7 @@ var mongoose = restful.mongoose;
 // Creating the model schema that tells mongoose what the database  looks like
 var userSchema = mongoose.Schema({
 	id: Number, // The users Twitch.tv id number. This should always be a number
-	FIM: {
+	fim: {
 		type: Number, // The Fake Internet Money that the User has.
 		default: 500 // The user start their account with this many FIMs
 	}
