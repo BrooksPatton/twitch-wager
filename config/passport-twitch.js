@@ -44,8 +44,8 @@ var twitchtvStrategy = new TwitchtvStrategy(
 		* user_subscriptions: Read access to subscriptions of a user.
 		* channel_check_subscription: Read access to check if a user is subscribed to your channel.
 		* chat_login: Ability to log into chat and send messages.
-		score: 'user_read'
 		*/
+		scope: 'user_read channel_read'
 	},
 	// Callback function to be called whenever the passport module is called.
 	function(accessToken, refreshToken, profile, done) {

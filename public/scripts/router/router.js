@@ -2,7 +2,8 @@
 var AppRouter = new (Backbone.Router.extend({
 	// The list of routes that bockbone will serve. This is similar to app.js
 	routes: {
-		'twitch-wager': 'index'
+		'twitch-wager': 'index',
+		'streamer': 'streamer'
 	},
 
 	// A method that we will call from main.js to start the router up
@@ -20,11 +21,38 @@ var AppRouter = new (Backbone.Router.extend({
 		// Setting where the fimView will render its main element
 		$('#user-fim-count').html(this.fimView.el);
 		// Get the user from the server, which will start all of the views as they are looking at when the user is changed
+		// Creating an instance of the streams collection which will hold all of the current streams
+		this.streams = new Streams();
+		// Get all of the streams from the server and populate them in the streams instance
+		this.streams.fetch();
+		// Get the current user from the server using the id that was embedded into the html as a basis.
 		this.user.fetch();
+		// Setting a click handler on the register new stream button to take the viewer to the register stream page
+		$('#register-stream').on('click', function() {
+			AppRouter.navigate('streamer', {
+				trigger: true
+			});
+		});
 	},
 
 	// Route handler for the root directory of the single page app.
 	index: function() {
 		console.log('hello from the router');
+	},
+
+	streamer: function() {
+		var streamerConsoleView = new StreamerConsoleView({model: this.user});
+		// Checking to see if the streamer is currently streaming on this site. Note that we are not checking if they are streaming on twitch. As far as I know that is not possible. Instead we are checking if the streamer has registered his stream as a game.
+		var stream = this.streams.findWhere({name: this.user.get('name')});
+		if(stream) {
+			// The user has registered their stream as active and ready to play.
+			this.user.set('streaming', true);
+		}
+		else {
+			// The user has no stream being played and therefore they won't show on the main page. Show the register button so the user can start their stream.
+			this.user.set('streaming', false);
+			streamerConsoleView.render();
+			$('#streamer-console').html(streamerConsoleView.el);
+		}
 	}
 }))();

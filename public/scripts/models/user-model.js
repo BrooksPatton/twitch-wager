@@ -3,5 +3,13 @@ var User = Backbone.Model.extend({
 	// We need to set the idAttribute since we are connecting to a mongo database. Mongo uses _id instead of backbones default id.
 	idAttribute: '_id',
 	// The root url for the user api is /user
-	urlRoot: '/user'
+	urlRoot: '/user',
+
+	createStream: function() {
+		var stream = new Stream({
+			username: this.get('name')
+		});
+		stream.save();
+		this.set('streaming', true);
+	}
 });

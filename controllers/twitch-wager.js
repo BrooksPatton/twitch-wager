@@ -8,6 +8,7 @@ var User = require('../models/user');
 var twitchWagerController = {
 	// route controller for the root of the main app. This mainly gets called when the user authenticates from the landing page
 	index: function(req, res) {
+		console.log(req.user);
 		// First things first, we need to check to see if the user exists in the database, if they do, then get the user information so we can send it to the jade template.
 		// If the user doesn't exist, then we will create them and send them to the jade template
 		User.findOne({id: req.user.id}).exec(function(err, user) {
@@ -25,7 +26,11 @@ var twitchWagerController = {
 			}
 			// The user doesn't exist, we will have to create one
 			else {
-				var newUser = new User({ id: req.user.id });
+				var newUser = new User({
+					id: req.user.id,
+					name: req.user.username,
+					displayName: req.user.displayName
+				});
 				newUser.save(function(err, user) {
 					if(err) {
 						console.log('There was an error saving a new user, ', err);

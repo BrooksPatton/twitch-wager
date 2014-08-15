@@ -9,7 +9,9 @@ var userSchema = mongoose.Schema({
 	fim: {
 		type: Number, // The Fake Internet Money that the User has.
 		default: 500 // The user start their account with this many FIMs
-	}
+	},
+	name: String,
+	displayName: String
 });
 
 // Creating the User object that node-restful will use to set up the routes

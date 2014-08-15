@@ -27,6 +27,7 @@ var authenticationController = require('./controllers/authentication');
 var passportTwitch = require('./config/passport-twitch.js');
 var twitchWagerController = require('./controllers/twitch-wager.js');
 var User = require('./models/user'); // The .js is optional, require will get it regardless
+var Stream = require('./models/stream');
 
 /**
  * Configure the express server
@@ -65,7 +66,7 @@ mongoose.connect('mongodb://localhost/twitchWager');
  // When the browser navigates to /
 app.get('/', indexController.index);
 // Route handler for authenticating with Twitch.tv. Using passport.authenticate() as a route middleware to authenticate the request. As this redirects the user to Twitch.tvs servers the callback function is not called
-app.get('/auth/twitchtv', passport.authenticate('twitchtv', { scope: [ 'user_read' ] }),
+app.get('/auth/twitchtv', passport.authenticate('twitchtv', { scope: [ 'user_read', 'channel_read' ] }),
 	function(req, res) {
 		// This function will not be called as the user will be redirected to twitch.tv for authentication
 	});
@@ -89,6 +90,7 @@ app.use(passportConfig.ensureAuthenticated);
 // Register all of the restful routes after the included string
 // This means that the user is accessible through /user/put and so on
 User.register(app, '/user');
+Stream.register(app, '/stream');
 
 // The root of the twitch wager app
 app.get('/twitch-wager', twitchWagerController.index);
