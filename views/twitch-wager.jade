@@ -17,32 +17,29 @@ block content
 
 block scripts
 	script#streamer-console-template(type="text/x-handlebars-template").
-		{{#if streaming}}
-			{{#if stream.attributes.betting}}
+		{{#if streaming}} 
+			//- the streamer is currently streaming a game
+			{{#if stream.attributes.playing}}
+				//- A game is running
 				<div class='row'>
-					<button class='btn btn-primary col-xs-8' id='lock-betting'>Lock betting</button>
-				</div>
-				<div class='row'>
-					<button class='btn btn-success col-xs-4' id='game-won'>I won</button>
-					<button class='btn btn-danger col-xs-4' id='game-lost'>I lost</button>
+					<button class='btn btn-success col-xs-4 game-status' id='game-won'>I won</button>
+					<button class='btn btn-danger col-xs-4 game-status' id='game-lost'>I lost</button>
 				</div>
 				<div class='row'>
 					<button class='btn btn-warning col-xs-8' id='end-stream'>End Stream</button>
 				</div>
 			{{else}}
+				//- A game is not running yet
 				<div class='row'>
-					<button class='btn btn-primary col-xs-8' id='start-betting'>start betting</button>
-				</div>
-				<div class='row'>
-					<button class='btn btn-success col-xs-4' id='game-won'>I won</button>
-					<button class='btn btn-danger col-xs-4' id='game-lost'>I lost</button>
+					<button class='btn btn-primary col-xs-8' id='start-round'>start round</button>
 				</div>
 				<div class='row'>
 					<button class='btn btn-warning col-xs-8' id='end-stream'>End Stream</button>
 				</div>
 			{{/if}}
 		{{else}}
-			<button class='btn btn-success' id='register-stream'>Register Stream</button>
+			//- The streamer is not streaming now
+			<button class='btn btn-success col-xs-8' id='start-stream'>Start stream</button>
 		{{/if}}
 	script.
 		//- This is a fun one. We are embedding the mongodb _id for the user object into the javascript namespace so that it can be referenced by the variable userId. We are doing this by using the JSON.stringify command which flattens the data. When it gets to the client, it is in a script tag, so the JSON.parse command runs immediately which returns the string to normal and saves it in userId. 

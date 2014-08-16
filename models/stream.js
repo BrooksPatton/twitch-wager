@@ -5,10 +5,20 @@ var mongoose = restful.mongoose;
 var streamSchema = mongoose.Schema({
 	username: String,
 	wagers: Object,
+	playing: {
+		type: Boolean,
+		default: false
+	},
 	betting: {
 		type: Boolean,
 		default: false
-	}
+	},
+	gameId: {
+		type: Number,
+		default: 0
+	},
+	gameStatus: String,
+	previousResult: String
 });
 
 var Stream = restful.model('Stream', streamSchema);

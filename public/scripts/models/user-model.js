@@ -13,20 +13,47 @@ var User = Backbone.Model.extend({
 		this.set('streaming', true);
 	},
 
-	startBetting: function(view) {
-		this.get('stream').set('betting', true).save();
+	startRound: function(view) {
+		this.get('stream')
+			.set('playing', true)
+			.set('betting', true)
+			.set('gameId', this.get('stream').get('gameId') + 1)
+			.save();
+		this.startBetTimer();
 		view.render();
 	},
 
-	lockBetting: function(view) {
+	lockBetting: function() {
 		this.get('stream').set('betting', false).save();
-		view.render();
 	},
 
 	endStream: function(view) {
 		this.get('stream').destroy();
 		this.unset('stream');
 		this.set('streaming', false);
+		view.render();
+	},
+
+	startBetTimer: function() {
+		var self = this;
+		setTimeout(function() {
+			self.lockBetting();
+		}, 5000);
+	},
+
+	gameWon: function(view) {
+		this.get('stream')
+			.set('previousResult', 'won')
+			.set('playing', false)
+			.save();
+		view.render();
+	},
+
+	gameLost: function(view) {
+		this.get('stream')
+			.set('previousResult', 'lost')
+			.set('playing', false)
+			.save();
 		view.render();
 	}
 });
