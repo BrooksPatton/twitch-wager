@@ -21,5 +21,12 @@ var User = Backbone.Model.extend({
 	lockBetting: function(view) {
 		this.get('stream').set('betting', false).save();
 		view.render();
+	},
+
+	endStream: function(view) {
+		this.get('stream').destroy();
+		this.unset('stream');
+		this.set('streaming', false);
+		view.render();
 	}
 });
