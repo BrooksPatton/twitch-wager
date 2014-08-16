@@ -4,7 +4,11 @@ var mongoose = restful.mongoose;
 
 var streamSchema = mongoose.Schema({
 	username: String,
-	wagers: Object
+	wagers: Object,
+	betting: {
+		type: Boolean,
+		default: false
+	}
 });
 
 var Stream = restful.model('Stream', streamSchema);

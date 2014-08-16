@@ -6,10 +6,20 @@ var User = Backbone.Model.extend({
 	urlRoot: '/user',
 
 	createStream: function() {
-		var stream = new Stream({
+		this.set('stream', new Stream({
 			username: this.get('name')
-		});
-		stream.save();
+		}));
+		this.get('stream').save();
 		this.set('streaming', true);
+	},
+
+	startBetting: function(view) {
+		this.get('stream').set('betting', true).save();
+		view.render();
+	},
+
+	lockBetting: function(view) {
+		this.get('stream').set('betting', false).save();
+		view.render();
 	}
 });

@@ -8,10 +8,21 @@ var StreamerConsoleView = Backbone.View.extend({
 	},
 
 	events: {
-		'click #register-stream': 'registerStream'
+		'click #register-stream': 'registerStream',
+		'click #start-betting': 'startBetting',
+		'click #lock-betting': 'lockBetting'
 	},
 
 	registerStream: function() {
 		this.model.createStream();
+		this.render();
+	},
+
+	startBetting: function() {
+		this.model.startBetting(this);
+	},
+
+	lockBetting: function() {
+		this.model.lockBetting(this);
 	}
 });

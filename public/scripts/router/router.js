@@ -43,10 +43,13 @@ var AppRouter = new (Backbone.Router.extend({
 	streamer: function() {
 		var streamerConsoleView = new StreamerConsoleView({model: this.user});
 		// Checking to see if the streamer is currently streaming on this site. Note that we are not checking if they are streaming on twitch. As far as I know that is not possible. Instead we are checking if the streamer has registered his stream as a game.
-		var stream = this.streams.findWhere({name: this.user.get('name')});
+		var stream = this.streams.findWhere({username: this.user.get('name')});
 		if(stream) {
 			// The user has registered their stream as active and ready to play.
 			this.user.set('streaming', true);
+			this.user.set('stream', stream);
+			streamerConsoleView.render();
+			$('#streamer-console').html(streamerConsoleView.el);
 		}
 		else {
 			// The user has no stream being played and therefore they won't show on the main page. Show the register button so the user can start their stream.
