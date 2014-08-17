@@ -1,7 +1,7 @@
 var Streams = Backbone.Collection.extend({
 	model: Stream,
 	url: '/stream',
-	initialize: function() {
+	start: function() {
 		var self = this;
 		setInterval(function() {
 			self.fetch();

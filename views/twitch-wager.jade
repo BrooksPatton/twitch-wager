@@ -3,17 +3,15 @@ extends layout
 block title
 	title Twitch Wagers - Bet fake internet money on the outcome of your favorite Twitch.tv streamers
 
+block brand
+	a.navbar-brand(href='/twitch-wager') Twitch Wagers
+
 block navbar
 	#user-fim-count
 	button.navbar-btn.btn.btn-default#register-stream Register your stream
 
 block content
-	.container.fluid
-		.row
-			#choose-stream
-			#wagers-list
-			#streamer-console
-			#stream
+	#main
 
 block scripts
 	script#streamer-console-template(type="text/x-handlebars-template").
@@ -41,6 +39,10 @@ block scripts
 			//- The streamer is not streaming now
 			<button class='btn btn-success col-xs-8' id='start-stream'>Start stream</button>
 		{{/if}}
+	script#select-stream-template(type="text/x-handlebars-template").
+		{{#each streams}}
+			<h1 class='orange-text stream col-xs-4' data-name='{{username}}'>{{username}}</h1>
+		{{/each}}
 	script.
 		//- This is a fun one. We are embedding the mongodb _id for the user object into the javascript namespace so that it can be referenced by the variable userId. We are doing this by using the JSON.stringify command which flattens the data. When it gets to the client, it is in a script tag, so the JSON.parse command runs immediately which returns the string to normal and saves it in userId. 
 		var userId = JSON.parse('!{JSON.stringify(userId)}');
@@ -49,5 +51,7 @@ block scripts
 	script(src='/scripts/models/stream-list.js')
 	script(src='/scripts/views/fim-view.js')
 	script(src='/scripts/views/streamer-console-view.js')
+	script(src='/scripts/views/select-stream-view.js')
+	script(src='/scripts/views/voter-view.js')
 	script(src='/scripts/router/router.js')
 	script(src='/scripts/main.js')

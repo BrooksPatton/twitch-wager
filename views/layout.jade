@@ -29,7 +29,8 @@ html(lang='en')
 		//- Begin top navbar
 		.navbar.navbar-default.navbar-fixed-top
 			.container
-				a.navbar-brand(href='/') Twitch Wagers
+				block brand
+					a.navbar-brand(href='#') Twitch Wagers
 				block navbar
 				.navbar-right
 					if user
