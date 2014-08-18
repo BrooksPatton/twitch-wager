@@ -18,6 +18,7 @@ var StreamerConsoleView = Backbone.View.extend({
 	registerStream: function() {
 		this.model.createStream();
 		this.render();
+		this.renderWagers(this.model.get('stream'));
 	},
 
 	startRound: function() {
@@ -34,5 +35,11 @@ var StreamerConsoleView = Backbone.View.extend({
 
 	gameLost: function() {
 		this.model.gameLost(this);
+	},
+
+	renderWagers: function(stream) {
+		var wagersView = new WagersView({ model: stream });
+		wagersView.render();
+		$('#wagers').html(wagersView.el);
 	}
 });

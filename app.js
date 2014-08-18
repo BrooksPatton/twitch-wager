@@ -94,7 +94,8 @@ Stream.register(app, '/stream');
 
 // The root of the twitch wager app
 app.get('/twitch-wager', twitchWagerController.index);
-app.post('/resolve-bets', twitchWagerController.resolveBets);
+app.post('/game-won', twitchWagerController.gameWon);
+app.post('/game-lost', twitchWagerController.gameLost);
 
 
 /**

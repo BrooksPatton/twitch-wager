@@ -36,6 +36,7 @@ var AppRouter = new (Backbone.Router.extend({
 
 	// Route handler for the root directory of the single page app.
 	index: function() {
+		$('#wager').html('');
 		var selectStreamView = new SelectStreamView({
 			collection: this.streams
 		});
@@ -45,6 +46,7 @@ var AppRouter = new (Backbone.Router.extend({
 	},
 
 	streamer: function() {
+		$('#wager').html('');
 		this.streams.fetch();
 		var streamerConsoleView = new StreamerConsoleView({model: this.user});
 		// Checking to see if the streamer is currently streaming on this site. Note that we are not checking if they are streaming on twitch. As far as I know that is not possible. Instead we are checking if the streamer has registered his stream as a game.
@@ -55,6 +57,7 @@ var AppRouter = new (Backbone.Router.extend({
 			this.user.set('stream', stream);
 			streamerConsoleView.render();
 			$('#main').html(streamerConsoleView.el);
+			streamerConsoleView.renderWagers(stream);
 		}
 		else {
 			// The user has no stream being played and therefore they won't show on the main page. Show the register button so the user can start their stream.

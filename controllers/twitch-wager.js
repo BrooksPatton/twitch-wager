@@ -45,7 +45,7 @@ var twitchWagerController = {
 		});
 	},
 
-	resolveBets: function(req, res) {
+	gameWon: function(req, res) {
 		var gameId = req.body.gameId;
 		Stream.findOne({_id: gameId}, function(err, game) {
 			if(err) return res.send(500);
@@ -58,8 +58,26 @@ var twitchWagerController = {
 						user.save();
 					});
 				}
-				else {
-					console.log('lose');
+			});
+			game.set('wagers', []);
+			game.save();
+		});
+
+		res.send(200);
+	},
+
+	gameLost: function(req, res) {
+		var gameId = req.body.gameId;
+		Stream.findOne({_id: gameId}, function(err, game) {
+			if(err) return res.send(500);
+			game.wagers.forEach(function(wager) {
+				if(wager.wager === 'lose') {
+					User.findOne({_id: wager.userId}, function(err, user) {
+						if(err) return res.send(500);
+						var currentFim = user.get('fim');
+						user.set('fim', currentFim + (wager.amount * 2));
+						user.save();
+					});
 				}
 			});
 			game.set('wagers', []);
