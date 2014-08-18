@@ -32,10 +32,14 @@ var ViewStreamView = Backbone.View.extend({
 	},
 
 	updateFimView: function() {
-		this.user.fetch();
-		var fimView = new FimView({ model: this.user });
-		fimView.render();
-		$('#user-fim-count').html(fimView.el);
+		this.user.fetch({
+			success: function(user) {
+				var fimView = new FimView({ model: user });
+				fimView.render();
+				$('#user-fim-count').html(fimView.el);
+			}
+		});
+		
 	},
 
 	setBets: function() {

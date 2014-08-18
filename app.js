@@ -94,6 +94,8 @@ Stream.register(app, '/stream');
 
 // The root of the twitch wager app
 app.get('/twitch-wager', twitchWagerController.index);
+app.post('/resolve-bets', twitchWagerController.resolveBets);
+
 
 /**
  * Start the server

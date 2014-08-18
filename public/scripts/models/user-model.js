@@ -51,6 +51,7 @@ var User = Backbone.Model.extend({
 			.set('playing', false)
 			.save();
 		view.render();
+		$.post('/resolve-bets', {gameId: this.get('stream').id});
 	},
 
 	gameLost: function(view) {
@@ -59,6 +60,7 @@ var User = Backbone.Model.extend({
 			.set('playing', false)
 			.save();
 		view.render();
+		$.post('/resolve-bets', {gameId: this.get('stream').id});
 	},
 
 	removeFim: function(amount) {
