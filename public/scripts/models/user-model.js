@@ -24,7 +24,11 @@ var User = Backbone.Model.extend({
 	},
 
 	lockBetting: function() {
-		this.get('stream').set('betting', false).save();
+		this.get('stream').fetch({
+			success: function(stream) {
+				stream.set('betting', false).save();
+			}
+		});
 	},
 
 	endStream: function(view) {
@@ -38,7 +42,7 @@ var User = Backbone.Model.extend({
 		var self = this;
 		setTimeout(function() {
 			self.lockBetting();
-		}, 5000);
+		}, 10000);
 	},
 
 	gameWon: function(view) {
@@ -55,5 +59,9 @@ var User = Backbone.Model.extend({
 			.set('playing', false)
 			.save();
 		view.render();
+	},
+
+	removeFim: function(amount) {
+		this.set('fim', this.get('fim') - amount).save();
 	}
 });

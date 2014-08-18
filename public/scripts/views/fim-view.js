@@ -7,7 +7,7 @@ var FimView = Backbone.View.extend({
 	// Initialize is a special method that runs as soon as the view is created.
 	initialize: function() {
 		// Whenever the view changes we want to rerender it. This will prevent us from having to place code to rerender the view every time we update the model.
-		this.model.on('change', this.render, this);
+		this.model.on('all', this.render, this);
 	},
 	// The render function that will create the html that will be inserted into the dom
 	render: function() {

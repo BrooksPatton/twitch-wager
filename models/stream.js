@@ -4,7 +4,10 @@ var mongoose = restful.mongoose;
 
 var streamSchema = mongoose.Schema({
 	username: String,
-	wagers: Object,
+	wagers: {
+		type: Array,
+		default: []
+	},
 	playing: {
 		type: Boolean,
 		default: false

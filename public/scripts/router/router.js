@@ -41,7 +41,7 @@ var AppRouter = new (Backbone.Router.extend({
 		});
 		selectStreamView.render();
 		$('#main').html(selectStreamView.el);
-		this.streams.start()
+		this.streams.start();
 	},
 
 	streamer: function() {
@@ -65,6 +65,12 @@ var AppRouter = new (Backbone.Router.extend({
 	},
 
 	viewStream: function(streamer) {
-		console.log('hi from viewStream, ' + streamer);
+		var stream = this.streams.findWhere({username: streamer});
+		var viewStreamView = new ViewStreamView({ model: stream });
+		var wagersView = new WagersView({ model: stream });
+		wagersView.render();
+		viewStreamView.render();
+		$('#wagers').html(wagersView.el);
+		$('#main').html(viewStreamView.el);
 	}
 }))();

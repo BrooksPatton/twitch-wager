@@ -12,7 +12,6 @@ var SelectStreamView = Backbone.View.extend({
 	},
 
 	render: function() {
-		console.log(this.collection.toJSON());
 		this.$el.html(this.template({streams: this.collection.toJSON()}));
 		return this.el;
 	},
@@ -22,4 +21,4 @@ var SelectStreamView = Backbone.View.extend({
 				trigger: true
 		});
 	}
-})
+});
