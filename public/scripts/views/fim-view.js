@@ -6,7 +6,9 @@ var FimView = Backbone.View.extend({
 	className: 'navbar-text',
 	// Initialize is a special method that runs as soon as the view is created.
 	initialize: function() {
+		// Storing the this value away so that we can access it inside of a callback function
 		var self = this;
+		// Every once in a while update the model, when it is successfuly updated then render it again.
 		setInterval(function() {
 			self.model.fetch({
 				success: function(user) {

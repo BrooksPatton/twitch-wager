@@ -5,24 +5,33 @@ var User = Backbone.Model.extend({
 	// The root url for the user api is /user
 	urlRoot: '/user',
 
+	// Method to create a stream, saving that stream in the model, and setting the streams streaming status.
 	createStream: function() {
+		// Storing the stream into the model
 		this.set('stream', new Stream({
 			username: this.get('name')
 		}));
+		// Saving the embedded stream to the server.
 		this.get('stream').save();
+		// Setting the streaming status of the streamer to true.
 		this.set('streaming', true);
 	},
 
+	// Start the round of betting.
 	startRound: function(view) {
+		// Getting the stream object embedded into the model, setting the playing and betting status to true, setting the gameId so that we can track how many games have been played this session. Anf finally saving the stream to the server.
 		this.get('stream')
 			.set('playing', true)
 			.set('betting', true)
 			.set('gameId', this.get('stream').get('gameId') + 1)
 			.save();
+		// Have the stream change the betting status to false after a short period of time
 		this.startBetTimer();
+		// Render the view that was passed in which will update the dom
 		view.render();
 	},
 
+	// Lock the betting so that nobody else can bet
 	lockBetting: function() {
 		this.get('stream').fetch({
 			success: function(stream) {
@@ -31,6 +40,7 @@ var User = Backbone.Model.extend({
 		});
 	},
 
+	// The streamer is finished. Delete the embedded stream which will remove the streamer from the front page
 	endStream: function(view) {
 		this.get('stream').destroy();
 		this.unset('stream');
@@ -38,13 +48,15 @@ var User = Backbone.Model.extend({
 		view.render();
 	},
 
+	// Start the bet timer, at the end (in miliseconds) turn the ability to bet off
 	startBetTimer: function() {
 		var self = this;
 		setTimeout(function() {
 			self.lockBetting();
-		}, 10000);
+		}, 60000);
 	},
 
+	// The streamer clicked the success button. Set the result in the stream, and send a post request to the server to have it resolve the bet
 	gameWon: function(view) {
 		this.get('stream')
 			.set('previousResult', 'success')
@@ -54,6 +66,7 @@ var User = Backbone.Model.extend({
 		$.post('/game-won', {gameId: this.get('stream').id});
 	},
 
+	// The streamer clicked the failure button. Set the result in the stream, and send a post request to the server to have it resolve the bet
 	gameLost: function(view) {
 		this.get('stream')
 			.set('previousResult', 'fail')
@@ -63,29 +76,40 @@ var User = Backbone.Model.extend({
 		$.post('/game-lost', {gameId: this.get('stream').id});
 	},
 
+	// Every time the viewer clicks on a bet they should lose some fake internet money
 	removeFim: function(amount) {
 		this.set('fim', this.get('fim') - amount).save();
 	}
 });
+// Backbone model for the stream
 var Stream = Backbone.Model.extend({
+	// We are using a mongo database and therefore need to set the idAttribute property to _id as backbone normally wants to use id.
 	idAttribute: '_id',
 
+	// Telling the model where the api route is for the data. All CRUD requests will go through this route
 	urlRoot: '/stream',
 
+	// The user clicked on the success button, indicating that the viewer beleives the the streamer will be successful
 	betWin: function(user, view) {
+		// getting the list of wagers that all viewers have made
 		var wager = this.get('wagers');
+		// Getting the current viewers but, if they have one
 		var currentBet = _.findWhere(wager, {userId: user.id});
 		if(currentBet) {
+			// If they have a bet, then we are going to change the bet inline so that we don't get mutliple lines for the same user in the wagers view
 			var index = _.indexOf(wager, currentBet);
 			if(currentBet.wager === 'success') {
+				// If the viever had already bet on success, then just add to their bet
 				wager[index].amount = currentBet.amount + 10;
 			}
 			else {
+				// Otherwise we are going to change their bet to success and reset down to 10
 				wager[index].wager = 'success';
 				wager[index].amount = 10;
 			}
 		}
 		else {
+			// The viewer has yet to make a bet, so add them to the top of the list.
 			wager.unshift({
 				user: user.get('name'),
 				wager: 'success',
@@ -93,12 +117,14 @@ var Stream = Backbone.Model.extend({
 				userId: user.id
 			});
 		}
+		// Save the wagers list back to the server
 		this.set('wagers', wager);
 		this.save();
 		user.removeFim(10);
 		view.updateFimView();
 	},
 
+	// Same thing as above, but this time we are wagering on the player failing
 	betLose: function(user, view) {
 		var wager = this.get('wagers');
 		var currentBet = _.findWhere(wager, {userId: user.id});
@@ -126,9 +152,11 @@ var Stream = Backbone.Model.extend({
 		view.updateFimView();
 	}
 });
+// Streams Backbone collection that will hold all of the streams
 var Streams = Backbone.Collection.extend({
 	model: Stream,
 	url: '/stream',
+	// When the start method is called, begin updating the collection constantly
 	start: function() {
 		var self = this;
 		setInterval(function() {
@@ -144,7 +172,9 @@ var FimView = Backbone.View.extend({
 	className: 'navbar-text',
 	// Initialize is a special method that runs as soon as the view is created.
 	initialize: function() {
+		// Storing the this value away so that we can access it inside of a callback function
 		var self = this;
+		// Every once in a while update the model, when it is successfuly updated then render it again.
 		setInterval(function() {
 			self.model.fetch({
 				success: function(user) {
@@ -218,24 +248,37 @@ var StreamerConsoleView = Backbone.View.extend({
 		$('#wagers').html(wagersView.el);
 	}
 });
+// Backbone constructor for the Main page where the viewer will select the stream that they want to view. Takes a collection as its data model
 var SelectStreamView = Backbone.View.extend({
+	// The viewer is using a desktop as the video is in adobe flash format...until twitch updates at least
 	className: 'container',
 
+	// The initialize method runs as soon as the instance is created
 	initialize: function() {
+		// Whenever the collection has something added to it, re-render the page
 		this.collection.on('add', this.render, this);
+		// Whenever something is removed from the collection, re-render the page
 		this.collection.on('remove', this.render, this);
+		// Preparing the handlebars template
 		this.template = Handlebars.compile($('#select-stream-template').html());
 	},
 
+	// The events method is like a jQuery event delegation.
 	events: {
+		// Whenever the user clicks on one of the streams listed on the page, run the selected Stream method
 		'click .stream': 'selectedStream'
 	},
 
+	// renders the html into the el property
+	// Once the el property has been embedded into the dom calling this method is enough to update the dom
 	render: function() {
+		// Using the handlebars template to create the html element and store it in el
 		this.$el.html(this.template({streams: this.collection.toJSON()}));
+		// Returning the el property so that calling the render method can be chained
 		return this.el;
 	},
 
+	// Tell the router to navigate to the view stream route and pass in which streamer we are going to watch.
 	selectedStream: function(e) {
 		AppRouter.navigate('view-stream/' + $(e.currentTarget).data('name'), {
 				trigger: true
@@ -381,43 +424,67 @@ var AppRouter = new (Backbone.Router.extend({
 
 	// Route handler for the root directory of the single page app.
 	index: function() {
+		// Emptying out the wager div as we don't want it to be showing here
 		$('#wager').html('');
+		// Creating an instance of the Backbone selectStreamView view and passing in the streams collection as the model
 		var selectStreamView = new SelectStreamView({
 			collection: this.streams
 		});
+		// Create the html element for the index view
 		selectStreamView.render();
+		// Attaching the html to the dom
 		$('#main').html(selectStreamView.el);
+		// Starting the streams to update every once in a while with the server
 		this.streams.start();
 	},
 
+	// Route handler for the streamer view
 	streamer: function() {
+		// Emptying out the wager div as we don't want anything in it right now
 		$('#wager').html('');
+		// Make sure that the streams collection is up to date
 		this.streams.fetch();
+		// Create an instance of the streamer view and pass in the user as the model
 		var streamerConsoleView = new StreamerConsoleView({model: this.user});
 		// Checking to see if the streamer is currently streaming on this site. Note that we are not checking if they are streaming on twitch. As far as I know that is not possible. Instead we are checking if the streamer has registered his stream as a game.
 		var stream = this.streams.findWhere({username: this.user.get('name')});
+		// If the streamer has a stream running now, then we are going to drop them right into the manage window.
+		// Otherwise they will get the start stream button
 		if(stream) {
 			// The user has registered their stream as active and ready to play.
 			this.user.set('streaming', true);
+			// Save the stream in the user instance
 			this.user.set('stream', stream);
+			// Create the html for the streamer view
 			streamerConsoleView.render();
+			// Inject the view into the dom.
 			$('#main').html(streamerConsoleView.el);
+			// Render the wageers view using the stream as the model. The wagers view is instanced and rendered in the streamer view instance
 			streamerConsoleView.renderWagers(stream);
 		}
 		else {
 			// The user has no stream being played and therefore they won't show on the main page. Show the register button so the user can start their stream.
 			this.user.set('streaming', false);
+			// Creating the streamer view html
 			streamerConsoleView.render();
+			// Injecting the streamer view into the dom
 			$('#main').html(streamerConsoleView.el);
 		}
 	},
 
+	// The view stream route handler. This is the view where the viewer can watch the stream and bet on the outcome
 	viewStream: function(streamer) {
+		// Finding what stream we are watching
 		var stream = this.streams.findWhere({username: streamer});
+		// Creating the view stream view using the stream as a model
 		var viewStreamView = new ViewStreamView({ model: stream });
+		// Creating the wagers view instance using the stream as a model
 		var wagersView = new WagersView({ model: stream });
+		// Creating the wagers view html element
 		wagersView.render();
+		// Creating the view stream view html element
 		viewStreamView.render();
+		// Injecting the wagers and view stream html that was rendered previously into the dom
 		$('#wagers').html(wagersView.el);
 		$('#main').html(viewStreamView.el);
 	}

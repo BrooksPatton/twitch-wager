@@ -45,10 +45,13 @@ var twitchWagerController = {
 		});
 	},
 
+	// Route handler for the ajax post request game-won. This will resolve all of the bets and reward players who bet on success
 	gameWon: function(req, res) {
+		// Finding the game id so we know which game reported success
 		var gameId = req.body.gameId;
 		Stream.findOne({_id: gameId}, function(err, game) {
 			if(err) return res.send(500);
+			// For each of the viewers who bet, reward them if they but success, and do nothing if they bet failure
 			game.wagers.forEach(function(wager) {
 				if(wager.wager === 'success') {
 					User.findOne({_id: wager.userId}, function(err, user) {
@@ -66,6 +69,7 @@ var twitchWagerController = {
 		res.send(200);
 	},
 
+	// Route handler for game failure ajax post. Using the same kind of logic as above
 	gameLost: function(req, res) {
 		var gameId = req.body.gameId;
 		Stream.findOne({_id: gameId}, function(err, game) {
