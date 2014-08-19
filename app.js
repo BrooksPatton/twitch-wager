@@ -94,6 +94,7 @@ Stream.register(app, '/stream');
 
 // The root of the twitch wager app
 app.get('/twitch-wager', twitchWagerController.index);
+// These are for ajax requests that the client will call when the streamer wins or loses a game.
 app.post('/game-won', twitchWagerController.gameWon);
 app.post('/game-lost', twitchWagerController.gameLost);
 

@@ -8,18 +8,18 @@ var Stream = Backbone.Model.extend({
 		var currentBet = _.findWhere(wager, {userId: user.id});
 		if(currentBet) {
 			var index = _.indexOf(wager, currentBet);
-			if(currentBet.wager === 'win') {
+			if(currentBet.wager === 'success') {
 				wager[index].amount = currentBet.amount + 10;
 			}
 			else {
-				wager[index].wager = 'win';
+				wager[index].wager = 'success';
 				wager[index].amount = 10;
 			}
 		}
 		else {
 			wager.unshift({
 				user: user.get('name'),
-				wager: 'win',
+				wager: 'success',
 				amount: 10,
 				userId: user.id
 			});
@@ -35,18 +35,18 @@ var Stream = Backbone.Model.extend({
 		var currentBet = _.findWhere(wager, {userId: user.id});
 		if(currentBet) {
 			var index = _.indexOf(wager, currentBet);
-			if(currentBet.wager === 'lose') {
+			if(currentBet.wager === 'fail') {
 				wager[index].amount = currentBet.amount + 10;
 			}
 			else {
-				wager[index].wager = 'lose';
+				wager[index].wager = 'fail';
 				wager[index].amount = 10;
 			}
 		}
 		else {
 			wager.unshift({
 				user: user.get('name'),
-				wager: 'lose',
+				wager: 'fail',
 				amount: 10,
 				userId: user.id
 			});

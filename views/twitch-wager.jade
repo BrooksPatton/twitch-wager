@@ -1,28 +1,37 @@
+//- Extends means that each of the blocks in this file are going to be inserted into the layout.jade file
 extends layout
 
+//- The title is being set in the layout file. But we are overwriting it here
 block title
 	title Twitch Wagers - Bet fake internet money on the outcome of your favorite Twitch.tv streamers
 
+//- Normally the brand is a link that would take the user back to /, but if they are in the app, then it should take them back to the beginning of the app
 block brand
 	a.navbar-brand(href='/twitch-wager') Twitch Wagers
 
+//- This is where the fake internet money is going to be dynamically injected
 block navbar
 	#user-fim-count
 	button.navbar-btn.btn.btn-default#register-stream Register your stream
 
 block content
+	//- The wagers is a list of viewers betting that will be shown on multiple pages. Including it here so that it is in the correct flow
 	#wagers
+	//- Everything other than the wagers will be rendered into main
 	#main
 
+//- Our custom script tags. These will come after the cdn tags in layout.jade. 
+//- There are a lot of handlebar templates here.
 block scripts
+	//- Handlebar template for the streamer console
 	script#streamer-console-template(type="text/x-handlebars-template").
 		{{#if streaming}} 
 			//- the streamer is currently streaming a game
 			{{#if stream.attributes.playing}}
 				//- A game is running
 				<div class='row'>
-					<button class='btn btn-success col-xs-4 game-status' id='game-won'>I won</button>
-					<button class='btn btn-danger col-xs-4 game-status' id='game-lost'>I lost</button>
+					<button class='btn btn-success col-xs-4 game-status' id='game-success'>I Succeeded</button>
+					<button class='btn btn-danger col-xs-4 game-status' id='game-fail'>I Failed</button>
 				</div>
 				<div class='row'>
 					<button class='btn btn-warning col-xs-8' id='end-stream'>End Stream</button>
@@ -40,10 +49,12 @@ block scripts
 			//- The streamer is not streaming now
 			<button class='btn btn-success col-xs-8' id='start-stream'>Start stream</button>
 		{{/if}}
+	//- Handlebar template for the main page where the viewer can choose to go to a stream
 	script#select-stream-template(type="text/x-handlebars-template").
 		{{#each streams}}
 			<h1 class='orange-text stream col-xs-4' data-name='{{username}}'>{{username}}</h1>
 		{{/each}}
+	//- Handlebar template which is for viewing the stream itself and betting. Note that the bet buttons are hidden by default. jQuery is used to unside and hide them as needed
 	script#view-stream-template(type="text/x-handlebars-template").
 		<div class='row'>
 			<div>
@@ -52,10 +63,11 @@ block scripts
 		</div>
 		<div class='row'>
 			<div class='col-xs-offset-4 hidden' id='betting-on'>
-					<button class='col-xs-2 btn btn-success' id='bet-win'>Bet win</button>
-					<button class='col-xs-2 btn btn-danger' id='bet-lose'>Bet lose</button>
+					<button class='col-xs-2 btn btn-success' id='bet-win'>Bet Success</button>
+					<button class='col-xs-2 btn btn-danger' id='bet-lose'>Bet Failure</button>
 			</div>
 		</div>
+	//- Handlebar template for the wagers view which shows all of the wagers
 	script#wagers-template(type="text/x-handlebars-template").
 		<h3 class='orange-text'>Wagers</h3>
 		{{#each wagers}}

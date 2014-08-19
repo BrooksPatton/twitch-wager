@@ -47,7 +47,7 @@ var User = Backbone.Model.extend({
 
 	gameWon: function(view) {
 		this.get('stream')
-			.set('previousResult', 'won')
+			.set('previousResult', 'success')
 			.set('playing', false)
 			.save();
 		view.render();
@@ -56,7 +56,7 @@ var User = Backbone.Model.extend({
 
 	gameLost: function(view) {
 		this.get('stream')
-			.set('previousResult', 'lost')
+			.set('previousResult', 'fail')
 			.set('playing', false)
 			.save();
 		view.render();

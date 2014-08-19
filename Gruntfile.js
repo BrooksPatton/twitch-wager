@@ -14,6 +14,7 @@ module.exports = function(grunt) {
 				'public/**/*.js',
 				'*.js'
 			],
+			// Run jshint on the javascript files that I directly edit
 			preConcat: [
 				'config/**/*.js',
 				'controllers/**/*.js',
@@ -21,6 +22,7 @@ module.exports = function(grunt) {
 				'public/scripts/**/*.js',
 				'*.js'
 			],
+			// Run jshint on the javascript file that contains the concatenated versions of the above js files
 			postConcat: [
 				'public/js/main.js',
 			],
@@ -36,6 +38,7 @@ module.exports = function(grunt) {
 					'public/scripts/**/*.js',
 					'*.js'
 				],
+				// We are making sure to run things in the correct order. We don't want to run jshint on the concatenated file before it gets re-written.
 				tasks: ['jshint:preConcat',
 					'concat',
 					'jshint:postConcat',
@@ -43,12 +46,14 @@ module.exports = function(grunt) {
 				]
 			}
 		},
-
+		// Configuring concat
 		concat: {
+			// Seperate each file by a semi-colon
 			options: {
 				seperator: ';'
 			},
 			dist: {
+				// Order matters here, they will go into the destinate file in the same order that they are listed
 				src: ['public/scripts/models/user-model.js',
 					 'public/scripts/models/stream-model.js',
 					 'public/scripts/models/stream-list.js',
@@ -60,12 +65,15 @@ module.exports = function(grunt) {
 					 'public/scripts/router/router.js',
 					 'public/scripts/main.js'
 				],
+				// The file that is created with the concated files together
 				dest: 'public/js/main.js'
 			}
 		},
 
+		// Configuring uglify
 		uglify: {
 			options: {
+				// We want all of the variable names to be mangled and compressed. This command makes that happen
 				mangle: {toplevel: true},
 			},
 			build: {

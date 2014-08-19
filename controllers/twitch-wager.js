@@ -50,7 +50,7 @@ var twitchWagerController = {
 		Stream.findOne({_id: gameId}, function(err, game) {
 			if(err) return res.send(500);
 			game.wagers.forEach(function(wager) {
-				if(wager.wager === 'win') {
+				if(wager.wager === 'success') {
 					User.findOne({_id: wager.userId}, function(err, user) {
 						if(err) return res.send(500);
 						var currentFim = user.get('fim');
@@ -71,7 +71,7 @@ var twitchWagerController = {
 		Stream.findOne({_id: gameId}, function(err, game) {
 			if(err) return res.send(500);
 			game.wagers.forEach(function(wager) {
-				if(wager.wager === 'lose') {
+				if(wager.wager === 'fail') {
 					User.findOne({_id: wager.userId}, function(err, user) {
 						if(err) return res.send(500);
 						var currentFim = user.get('fim');
