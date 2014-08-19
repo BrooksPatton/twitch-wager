@@ -79,7 +79,7 @@ mongoose.connect(mongoUri);
  // When the browser navigates to /
 app.get('/', indexController.index);
 // Route handler for authenticating with Twitch.tv. Using passport.authenticate() as a route middleware to authenticate the request. As this redirects the user to Twitch.tvs servers the callback function is not called
-app.get('/auth/twitchtv', passport.authenticate('twitchtv', { scope: [ 'user_read', 'channel_read' ] }),
+app.get('/auth/twitchtv', passport.authenticate('twitchtv', { scope: [ 'user_read' ] }),
 	function(req, res) {
 		// This function will not be called as the user will be redirected to twitch.tv for authentication
 	});
