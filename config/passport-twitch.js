@@ -29,7 +29,8 @@ var twitchtvStrategy = new TwitchtvStrategy(
 		// Our clientSecret key from twitch.tv. Needs to be kept double secret
 		clientSecret: twitchKeys.clientSecret,
 		// The route that twitch will call when the authentication is complete
-		callbackURL: 'http://localhost:4088/auth/twitchtv/callback',
+		// callbackURL: 'http://localhost:4088/auth/twitchtv/callback', // for when we are testing with localhost.
+		callbackURL: 'http://twitch-wagers.herokuapp.com/auth/twitchtv/callback',
 		// What rights we are requesting.
 		// Available scopes
 		/** user_read: Read access to non-public user information, such as email address.
