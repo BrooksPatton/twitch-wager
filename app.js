@@ -17,6 +17,7 @@ var passport = require('passport');
 var restful = require('node-restful');
 // We require mongoose for the database transactions, but we are using the node-restful as middleware between us and the require
 var mongoose = restful.mongoose;
+var logfmt = require("logfmt"); // Allows us to log to Herokus logging system
 
 /**
  * Local file requires
@@ -48,17 +49,29 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 // Load in the method override module so that we can have a restful server
 app.use(methodOverride('X-HTTP-Method-Override'));
-// Initialize the express session. Needs to be give a secret property which will encrypt the cookies. This should be something not easily guessable!!!
-app.use(session({secret: 'alsdhfksjh'}));
+/**
+ * Initialize the express session cookie. Name is the name of the cookie. By default it would be connect.sid.
+ * The secret is the phrase that will be used to encrypt the contents of the cookie.
+ */
+app.use(session({
+	secret: 'ThisIsATopSecretAwesomeThingy',
+	saveUninitialized: true,
+	resave: true
+}));
 // Initializing passport
 app.use(passport.initialize());
 // Allow passport to support persistence login sessions
 app.use(passport.session());
+/**
+ * Start the logging system which will be used with Heroku
+ */
+app.use(logfmt.requestLogger());
 
 /**
 * Connect to the database with mongoose
 */
-mongoose.connect('mongodb://localhost/twitchWager');
+var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/twitchWager';
+mongoose.connect(mongoUri);
 
 /**
  * Route handlers
@@ -102,6 +115,7 @@ app.post('/game-lost', twitchWagerController.gameLost);
 /**
  * Start the server
  */
-var server = app.listen(4088, function() {
-	console.log('Express server listening on localhost:' + server.address().port);
+var port = process.env.PORT || 4088;
+var server = app.listen(port, function() {
+	console.log('Express server listening on port ' + server.address().port);
 });
