@@ -6,7 +6,7 @@ var indexController = {
 	// Route handler for /
 	index: function(req, res) {
 		// Compile the index jade template and send back to the browser
-		res.render('index');
+		res.render('index', { user: req.user });
 	}
 };
 

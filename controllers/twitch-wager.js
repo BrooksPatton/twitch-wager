@@ -21,7 +21,8 @@ var twitchWagerController = {
 			// If the user exists then we are going to send the data to the jade template
 			if(user) {
 				res.render('twitch-wager', {
-					userId: user._id
+					userId: user._id,
+					user: req.user
 				});
 			}
 			// The user doesn't exist, we will have to create one
